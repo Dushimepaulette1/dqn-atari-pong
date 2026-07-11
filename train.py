@@ -1,16 +1,30 @@
 """
 train.py - Train a DQN agent on Atari Pong using Stable Baselines3.
 
-Can be run from the command line with configurable hyperparameters:
-    python train.py --name exp01_baseline
-    python train.py --name exp_high_lr --lr 0.001 --timesteps 150000
+Can be used two ways:
+  1. From the command line:
+     python train.py --name exp01_baseline
+     python train.py --name exp_high_lr --lr 0.001 --timesteps 150000
+  2. Imported in a notebook:
+     from train import train_dqn
+     train_dqn(name="exp_high_lr", lr=1e-3, timesteps=150_000)
+
+Each run saves the model as dqn_model_<name>.zip, logs to TensorBoard,
+and appends a summary row (final evaluation reward, etc.) to results.csv.
+
+Note on epsilon decay: SB3 expresses the decay speed as exploration_fraction,
+the fraction of total training over which epsilon decays linearly from
+eps_start to eps_end. Smaller = faster decay.
 """
 
 import argparse
+import csv
+import os
 import time
 
 from stable_baselines3 import DQN
 from stable_baselines3.common.env_util import make_atari_env
+from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.vec_env import VecFrameStack
 
 import ale_py
@@ -18,6 +32,7 @@ import gymnasium as gym
 gym.register_envs(ale_py)   # registers the Atari environments with Gymnasium
 
 ENV_ID = "ALE/Pong-v5"      # modern naming; old PongNoFrameskip-v4 was removed
+RESULTS_FILE = "results.csv"
 
 
 def make_env(seed=42):
@@ -43,7 +58,8 @@ def train_dqn(
     timesteps=500_000,
     seed=42,
 ):
-    """Train one DQN agent with the given hyperparameters and save the model."""
+    """Train one DQN agent with the given hyperparameters, save the model,
+    evaluate it greedily, and log a summary row to results.csv."""
     env = make_env(seed)
 
     model = DQN(
@@ -60,21 +76,52 @@ def train_dqn(
         train_freq=4,
         target_update_interval=1_000,
         verbose=1,
+        tensorboard_log=f"./tb_logs/{name}",
         seed=seed,
     )
 
-    print(f"\n=== {name}: policy={policy}, lr={lr}, gamma={gamma}, "
+    print(f"\n{'='*60}")
+    print(f"=== {name}: policy={policy}, lr={lr}, gamma={gamma}, "
           f"batch={batch_size}, eps={eps_start}->{eps_end} "
-          f"over {exploration_fraction*100:.0f}% of training ===\n")
+          f"over {exploration_fraction*100:.0f}% of training ===")
+    print(f"{'='*60}\n")
 
     start = time.time()
     model.learn(total_timesteps=timesteps, log_interval=25)
     minutes = (time.time() - start) / 60
 
     model.save(f"dqn_model_{name}")
-    print(f"\n>>> {name} done in {minutes:.1f} min\n")
 
-    return model
+    # Greedy evaluation (deterministic=True = GreedyQPolicy): how good is
+    # the agent when it stops exploring and just plays its best?
+    eval_env = make_env(seed=123)
+    mean_reward, std_reward = evaluate_policy(
+        model, eval_env, n_eval_episodes=3, deterministic=True
+    )
+    eval_env.close()
+    env.close()
+
+    print(f"\n>>> {name} done in {minutes:.1f} min | "
+          f"greedy eval reward: {mean_reward:.1f} +/- {std_reward:.1f}\n")
+
+    # Append summary row to results.csv -> this becomes your table
+    write_header = not os.path.exists(RESULTS_FILE)
+    with open(RESULTS_FILE, "a", newline="") as f:
+        writer = csv.writer(f)
+        if write_header:
+            writer.writerow([
+                "experiment", "policy", "lr", "gamma", "batch_size",
+                "eps_start", "eps_end", "exploration_fraction",
+                "timesteps", "train_minutes", "eval_reward_mean",
+                "eval_reward_std",
+            ])
+        writer.writerow([
+            name, policy, lr, gamma, batch_size, eps_start, eps_end,
+            exploration_fraction, timesteps, round(minutes, 1),
+            round(mean_reward, 2), round(std_reward, 2),
+        ])
+
+    return mean_reward
 
 
 def parse_args():
