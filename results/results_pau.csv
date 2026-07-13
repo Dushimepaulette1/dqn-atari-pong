@@ -2,3 +2,5 @@ experiment,policy,lr,gamma,batch_size,eps_start,eps_end,exploration_fraction,tim
 exp01_baseline,CnnPolicy,0.0001,0.99,32,1.0,0.05,0.1,500000,29.3,-14.33,6.6
 exp02_high_lr,CnnPolicy,0.001,0.99,32,1.0,0.05,0.1,500000,29.5,-21.0,0.0
 exp03_low_lr,CnnPolicy,1e-05,0.99,32,1.0,0.05,0.1,500000,30.0,-21.0,0.0
+exp04_low_gamma,CnnPolicy,0.0001,0.9,32,1.0,0.05,0.1,500000,30.2,-14.67,2.36
+exp05_high_gamma,CnnPolicy,0.0001,0.999,32,1.0,0.05,0.1,500000,30.3,-16.0,0.0
