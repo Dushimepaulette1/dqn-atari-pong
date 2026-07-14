@@ -1,6 +1,10 @@
 """
 train.py - Train a DQN agent on Atari Pong using Stable Baselines3.
 
+Default hyperparameters correspond to the best configuration found during
+tuning (exp10: lr=1e-4, gamma=0.99, batch=128, eps 1.0->0.05 over 20% of
+training, 1M timesteps -> greedy eval reward +20.3).
+
 Can be used two ways:
   1. From the command line:
      python train.py --name exp01_baseline
@@ -50,12 +54,14 @@ def train_dqn(
     name,
     lr=1e-4,
     gamma=0.99,
-    batch_size=32,
+    batch_size=128,
     eps_start=1.0,
     eps_end=0.05,
-    exploration_fraction=0.1,
+    exploration_fraction=0.2,   # SB3's "epsilon decay": fraction of training
+                                # over which epsilon decays linearly.
+                                # Smaller = faster decay.
     policy="CnnPolicy",
-    timesteps=500_000,
+    timesteps=1_000_000,
     seed=42,
 ):
     """Train one DQN agent with the given hyperparameters, save the model,
@@ -129,12 +135,12 @@ def parse_args():
     p.add_argument("--name", required=True, help="experiment name, e.g. exp01_baseline")
     p.add_argument("--lr", type=float, default=1e-4)
     p.add_argument("--gamma", type=float, default=0.99)
-    p.add_argument("--batch", type=int, default=32)
+    p.add_argument("--batch", type=int, default=128)
     p.add_argument("--eps_start", type=float, default=1.0)
     p.add_argument("--eps_end", type=float, default=0.05)
-    p.add_argument("--exploration_fraction", type=float, default=0.1)
+    p.add_argument("--exploration_fraction", type=float, default=0.2)
     p.add_argument("--policy", default="CnnPolicy", choices=["CnnPolicy", "MlpPolicy"])
-    p.add_argument("--timesteps", type=int, default=500_000)
+    p.add_argument("--timesteps", type=int, default=1_000_000)
     return p.parse_args()
 
 
