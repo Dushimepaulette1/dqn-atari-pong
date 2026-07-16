@@ -2,6 +2,7 @@
 play.py - Load the trained DQN model and watch it play Pong.
 
 Run this LOCALLY on your laptop. Put dqn_model.zip in the same folder.
+Set RECORD_VIDEO = True to also save an mp4 into ./videos for the README.
 """
 
 import ale_py
@@ -15,9 +16,10 @@ gym.register_envs(ale_py)   # registers the Atari environments with Gymnasium
 MODEL_PATH = "dqn_model.zip"
 ENV_ID = "ALE/Pong-v5"
 NUM_EPISODES = 3
+RECORD_VIDEO = False # set True to also save mp4s into ./videos
 
 
-def make_env():
+def make_env(render_mode):
     """Must match the training setup exactly: same env, same preprocessing,
     same 4-frame stacking, frameskip handled by the wrapper only."""
     env = make_atari_env(
@@ -25,7 +27,7 @@ def make_env():
         env_kwargs={
             "frameskip": 1,
             "repeat_action_probability": 0.0,
-            "render_mode": "human",
+            "render_mode": render_mode,
         },
     )
     env = VecFrameStack(env, n_stack=4)
@@ -33,7 +35,19 @@ def make_env():
 
 
 def main():
-    env = make_env()
+    if RECORD_VIDEO:
+        from stable_baselines3.common.vec_env import VecVideoRecorder
+        env = make_env(render_mode="rgb_array")
+        env = VecVideoRecorder(
+            env, video_folder="./videos",
+            record_video_trigger=lambda step: step == 0,
+            video_length=20_000,
+            name_prefix="dqn_pong",
+        )
+    else:
+        # human mode opens a game window and renders every step automatically
+        env = make_env(render_mode="human")
+
     model = DQN.load(MODEL_PATH)
     print(f"Loaded model from {MODEL_PATH}")
 
