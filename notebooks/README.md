@@ -11,3 +11,5 @@ All experiments use the group's shared `train.py` unchanged, so every run differ
 only by its hyperparameters — nothing else.
 
 ## What's here so far
+
+- **`Kelvin_Task.ipynb`** — the notebook driving my k01–k10 experiments.
