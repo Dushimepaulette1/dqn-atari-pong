@@ -24,3 +24,4 @@ It installs its own dependencies in the first cell:
 
 ```
 stable-baselines3[extra]
+gymnasium[atari]
