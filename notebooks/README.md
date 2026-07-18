@@ -16,3 +16,5 @@ only by its hyperparameters — nothing else.
 - **`formative-3.ipynb`** — earlier working notebook for the formative.
 - **`DQN_Breakout_ColabPro_Production_(1) (1).ipynb`** — reference notebook from
   the earlier Breakout work.
+
+## Setup
