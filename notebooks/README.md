@@ -28,3 +28,8 @@ gymnasium[atari]
 ale-py
 autorom[accept-rom-license]
 ```
+
+The working directory is mounted on Google Drive, so models, logs, and outputs
+are written straight to Drive as each run happens. Each experiment writes a DONE
+flag on completion, so a session that dies can be resumed by rerunning — finished
+experiments are skipped.
