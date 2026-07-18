@@ -14,3 +14,5 @@ only by its hyperparameters — nothing else.
 
 - **`Kelvin_Task.ipynb`** — the notebook driving my k01–k10 experiments.
 - **`formative-3.ipynb`** — earlier working notebook for the formative.
+- **`DQN_Breakout_ColabPro_Production_(1) (1).ipynb`** — reference notebook from
+  the earlier Breakout work.
