@@ -21,3 +21,6 @@ only by its hyperparameters — nothing else.
 
 The notebook is built to run on Google Colab with a GPU runtime (T4 is enough).
 It installs its own dependencies in the first cell:
+
+```
+stable-baselines3[extra]
