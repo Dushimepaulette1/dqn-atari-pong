@@ -18,3 +18,6 @@ only by its hyperparameters — nothing else.
   the earlier Breakout work.
 
 ## Setup
+
+The notebook is built to run on Google Colab with a GPU runtime (T4 is enough).
+It installs its own dependencies in the first cell:
