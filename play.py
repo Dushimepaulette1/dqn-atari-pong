@@ -16,7 +16,7 @@ gym.register_envs(ale_py)   # registers the Atari environments with Gymnasium
 MODEL_PATH = "dqn_model.zip"
 ENV_ID = "ALE/Pong-v5"
 NUM_EPISODES = 3
-RECORD_VIDEO = False # set True to also save mp4s into ./videos
+RECORD_VIDEO = True # set True to also save mp4s into ./videos
 
 
 def make_env(render_mode):
