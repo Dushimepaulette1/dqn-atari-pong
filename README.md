@@ -1,3 +1,4 @@
+
 # DQN on Atari Pong — Formative 2
 
 Training a Deep Q-Network (DQN) agent to play Atari Pong using Stable Baselines3 and Gymnasium.
@@ -8,7 +9,7 @@ Training a Deep Q-Network (DQN) agent to play Atari Pong using Stable Baselines3
 
 ## Gameplay demo
 
-▶️ [Watch the gameplay demo](videos/dqn_pong_gameplay.mp4) — opens GitHub's built-in video player.
+https://github.com/user-attachments/assets/6994b960-bbe4-4e26-8a81-987b8edd6f30
 
 The clip was produced by `play.py`, which loads the trained model and plays with a greedy policy (always the highest Q-value action, no exploration). Console output from the recorded run:
 
