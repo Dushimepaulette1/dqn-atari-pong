@@ -3,5 +3,6 @@ __pycache__/
 .ipynb_checkpoints/
 tb_logs/
 .venv/
-videos/
+videos/*
+!videos/dqn_pong_gameplay.mp4
 dqn_model_exp*.zip

@@ -8,7 +8,7 @@ Training a Deep Q-Network (DQN) agent to play Atari Pong using Stable Baselines3
 
 ## Gameplay demo
 
-[VIDEO EMBED GOES HERE — edit this README on GitHub and drag-and-drop videos/dqn_pong_gameplay.mp4 into the editor to make it playable inline]
+<video src="https://raw.githubusercontent.com/Dushimepaulette1/dqn-atari-pong/main/videos/dqn_pong_gameplay.mp4" controls width="600"></video>
 
 The clip was produced by `play.py`, which loads the trained model and plays with a greedy policy (always the highest Q-value action, no exploration). Console output from the recorded run:
 
