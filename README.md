@@ -2,7 +2,7 @@
 
 Training a Deep Q-Network (DQN) agent to play Atari Pong using Stable Baselines3 and Gymnasium.
 
-**Team:** Paulette Dushime · Kelvin [surname] · David Cyubahiro
+**Team:** Paulette Dushime · Kelvin Rwihimba · David Cyubahiro
 
 **Final result: our best agent reaches a greedy evaluation reward of +20.3 out of a maximum +21** (it wins matches roughly 21–1). Trained for 1M timesteps with the best configuration found across 30 hyperparameter experiments (10 per member).
 
@@ -112,10 +112,29 @@ Larger batches average the Bellman update over more replayed experiences, produc
 | eps decay over 30% of training | Eval -12.0, better than baseline despite "wasting" 150k steps exploring. Early exploration is an investment. |
 | **exp10 (best): lr=1e-4, gamma=0.99, batch=128, eps decay over 20%, 1M steps** | **Eval +20.3 ± 0.5 — the final model (dqn_model.zip).** Combined the batch-size winner with extended exploration and longer training; reward climbed -20 → -13 → -4 → +6 → +13 → +17 during training. |
 
-### Member: Kelvin
+### Member: Kelvin Rwihimba
 
-<!-- KELVIN: Replace this comment block with your hyperparameter table and noted behaviors (see kelvin_readme_section.md sent to you). Commit as: "Add Kelvin's hyperparameter table and noted behaviors" -->
-*Section to be added by Kelvin — his 10 experiment results are in `results/results_kelvin.csv`.*
+I ran ten single-variable experiments (**k01–k10**), each changing exactly one hyperparameter from the shared baseline (`CnnPolicy`, lr=1e-4, gamma=0.99, batch=32, epsilon 1.0→0.05 decayed over 10% of training) so the effect of each knob is isolated. Every run used Paulette's `train.py` unchanged, trained for **500k timesteps**, and was scored by greedy evaluation over 3 episodes. I ran them on Colab (T4 GPU) from my own notebook using a resumable runner — each experiment writes a `DONE` flag so a dropped session skips finished runs and continues. Baseline for comparison is `exp01_baseline` at **-14.3**.
+
+Full data: [`results/results_kelvin.csv`](results/results_kelvin.csv) · detailed per-experiment write-ups: [`results/kelvin_notes.md`](results/kelvin_notes.md).
+
+| Experiment | Change vs baseline | Eval reward | Noted Behavior |
+|---|---|---|---|
+| k01_lr_5e4 | lr = 5e-4 (5×) | -21.0 ± 0.0 | Even 5× the baseline learning rate collapsed training completely, mirroring Paulette's lr=1e-3 run. The usable ceiling for the learning rate sits somewhere below 5e-4. |
+| k02_lr_5e5 | lr = 5e-5 (½×) | -7.7 ± 0.9 | Clearly better than the -14.3 baseline. The contrast with Paulette's lr=1e-5 (stuck at -21) is telling: half the baseline rate is slow but still learns, a tenth is effectively frozen. |
+| k03_gamma_095 | gamma = 0.95 | -9.3 ± 7.5 | Better than baseline, but the wide spread across evaluation episodes means I don't read too much into the average. |
+| k04_gamma_098 | gamma = 0.98 | -16.0 ± 2.8 | Marginally below baseline. Taken with my gamma=0.95 run, gamma barely moves the needle in Pong, because its rewards land soon after the actions that earn them. |
+| k05_batch16 | batch = 16 | -18.0 ± 0.0 | Small, noisy 16-sample gradient batches hurt stability, marking the bottom of the group's batch-size ladder. |
+| k06_batch256 | batch = 256 | **+19.7 ± 1.9** | The best 500k-step result in the whole group. Very smooth gradient updates; the trade-off was compute, ~56 min vs ~30 min for the baseline at the same step count. |
+| k07_epsend_001 | eps_end = 0.01 | -17.3 ± 3.8 | A 0.01 exploration floor means the agent almost stops exploring late in training, which underperformed the standard 0.05 floor over 500k steps. |
+| k08_epsend_015 | eps_end = 0.15 | -15.0 ± 7.1 | A permanent 15% random-action rate kept play inconsistent — around baseline on average but with a wide spread. |
+| k09_decay_5pct | eps decay over 5% | -9.7 ± 0.9 | Ahead of the baseline's 10% decay in this run: reaching mostly-greedy play early left more of training to exploit. |
+| k10_decay_50pct | eps decay over 50% | -6.3 ± 0.5 | The best pure-epsilon result in the group. It backs up Paulette's finding that slower epsilon decay pays off: exploration is an investment. |
+
+**My takeaways:**
+- **Batch size is the biggest lever.** `k06_batch256` (+19.7) was the single best 500k-step run in the group and sits at the top of a batch-size ladder that improved monotonically across all three of us (16 → 32 → 64 → 128 → 256). Bigger batches average each update over more replayed experiences, so gradients are less noisy — and DQN, being inherently unstable, gains the most from that.
+- **Learning rate has a narrow usable band.** My `k01` (5e-4) collapsed to -21 while `k02` (5e-5) worked (-7.7); combined with Paulette's 1e-3 and 1e-5 runs this maps both failure modes — too high overshoots and destroys the Q-values, too low never learns in the steps available.
+- **Slower epsilon decay helps.** `k10` (decay over 50%) was my best epsilon-only run, reinforcing that early exploration pays back later.
 
 ### Member: David Cyubahiro
 
@@ -131,7 +150,7 @@ The final model combines these lessons: lr=1e-4, gamma=0.99, batch=128, epsilon 
 ## Individual contributions
 
 - **Paulette Dushime:** environment selection, shared training pipeline (train.py, play.py, Kaggle notebook used by all members), 10 hyperparameter experiments, MLP vs CNN comparison, final 1M-step model, gameplay video, repository assembly and README.
-- **Kelvin [surname]:** 10 hyperparameter experiments (intermediate lr/gamma values, batch-size extremes, epsilon floors and decay extremes) run on Colab with a resumable experiment runner; written analysis of his results.
+- **Kelvin Rwihimba:** 10 hyperparameter experiments (intermediate lr/gamma values, batch-size extremes, epsilon floors and decay extremes) run on Colab with a resumable experiment runner; written analysis of his results.
 - **David Cyubahiro:** 10 hyperparameter experiments focused on hyperparameter combinations and interaction effects; written analysis of his results.
 
 Each member's raw results are in `results/` and their notebooks in `notebooks/`; commit history reflects individual uploads.
