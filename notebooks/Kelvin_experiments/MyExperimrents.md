@@ -14,8 +14,8 @@ best of **+9.0** (both at 500k steps).
 
 ## What's here
 
-- **`dpqn_Pong.ipynb`** — the notebook that drives all ten k01–k10 experiments,
-  writes `results.csv`, and produces the ranking below.
+- **`experiment_notebook.ipynb`** — the notebook that drives all ten k01–k10
+  experiments, writes `results.csv`, and produces the ranking below.
 - **`results.csv`** — the summary table (one row per experiment). A copy also
   lives at `../results.csv`.
 
