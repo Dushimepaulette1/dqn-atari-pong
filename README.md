@@ -66,5 +66,14 @@ Ten experiments varied one hyperparameter at a time against a CNN baseline, plus
 
 Full data in [`results/results_pau.csv`](results/results_pau.csv).
 
-## Status
-Hyperparameter sweep complete - see `results/results_pau.csv` for the full set of experiment results.
+## Findings
+
+- **Batch size mattered most**: moving from 32 to 128 turned a losing agent into a winning one (9.0 → 20.33 average reward).
+- **Learning rate is sensitive**: both 10x higher and 10x lower than baseline collapsed to the worst possible score (-21, i.e. losing every point).
+- **A slower epsilon decay helped**: giving the agent more random exploration before committing to greedy play (30% vs 10% of training) improved on the baseline.
+- **CNN clearly beats MLP** on raw pixel input, as expected - the MLP policy never learned better than random play.
+- The final configuration (`exp10_best`): lr=1e-4, gamma=0.99, batch_size=128, epsilon decayed over 20% of training, 1M timesteps - achieved a **+20.33** average greedy evaluation reward.
+
+## License
+
+Personal project for learning purposes.
