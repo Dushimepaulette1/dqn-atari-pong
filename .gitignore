@@ -3,3 +3,5 @@ __pycache__/
 .ipynb_checkpoints/
 tb_logs/
 .venv/
+videos/
+dqn_model_exp*.zip
