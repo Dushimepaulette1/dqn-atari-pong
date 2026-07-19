@@ -16,8 +16,10 @@ best of **+9.0** (both at 500k steps).
 
 - **`experiment_notebook.ipynb`** — the notebook that drives all ten k01–k10
   experiments, writes `results.csv`, and produces the ranking below.
-- **`results.csv`** — the summary table (one row per experiment). A copy also
-  lives at `../results.csv`.
+- The canonical results table for the repo lives at
+  [`../../results/results_kelvin.csv`](../../results/results_kelvin.csv), with my
+  per-experiment write-ups in
+  [`../../results/kelvin_notes.md`](../../results/kelvin_notes.md).
 
 ## Setup
 
@@ -44,7 +46,7 @@ evaluated greedily over 3 episodes.
 | Experiment | Hyperparameter change (vs. baseline) |
 |---|---|
 | k01_lr_5e4 | learning rate 5e-4 (5× higher) |
-| k02_lr_5e5 | learning rate 5e-5 (2× lower) |
+| k02_lr_5e5 | learning rate 5e-5 (½× baseline) |
 | k03_gamma_095 | gamma 0.95 (shorter reward horizon) |
 | k04_gamma_098 | gamma 0.98 |
 | k05_batch16 | batch size 16 |
